@@ -43,3 +43,33 @@ public class MyTest {
 }
 ```
 
+# How to understand what is happening with qDup
+Apply the following
+```text
+diff --git a/src/main/java/io/hyperfoil/tools/qdup/shell/AbstractShell.java b/src/main/java/io/hyperfoil/tools/qdup/shell/AbstractShell.java
+index 7cdcf82c..56862e37 100644
+--- a/src/main/java/io/hyperfoil/tools/qdup/shell/AbstractShell.java
++++ b/src/main/java/io/hyperfoil/tools/qdup/shell/AbstractShell.java
+@@ -356,7 +356,7 @@ public void sh(String command, BiConsumer<String,String> callback, Map<String, S
+     }
+     void sh(String command, boolean acquireLock, BiConsumer<String,String> callback, Map<String, String> prompt) {
+         command = command.replaceAll("[\r\n]+$", ""); //replace trailing newlines
+-        logger.trace("{} sh: {}, lock: {}", getHost(), command, acquireLock);
++        logger.info("{} sh: {}, lock: {}", getHost(), command, acquireLock);
+         ShAction newAction = new ShAction(command,acquireLock,callback,prompt);
+         lastCommand = command;
+         if (command == null || commandStream == null) {
+diff --git a/src/main/resources/log4j2.xml b/src/main/resources/log4j2.xml
+index 05dcefae..9019d4ec 100644
+--- a/src/main/resources/log4j2.xml
++++ b/src/main/resources/log4j2.xml
+@@ -8,7 +8,7 @@
+             </PatternLayout>
+         </File>
+         <Console name="STDOUT" target="SYSTEM_OUT" follow="true">
+-            <PatternLayout disableAnsi="false" pattern="%highlight{%d{HH:mm:ss.SSS} %m%n}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=white, DEBUG=green bold, TRACE=blue}"/>
++            <PatternLayout disableAnsi="false" pattern="%highlight{%d{HH:mm:ss.SSS} [%p] %m%n}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=white, DEBUG=green bold, TRACE=blue}"/>
+         </Console>
+     </Appenders>
+     <Loggers>
+```
